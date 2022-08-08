@@ -1,5 +1,5 @@
 use clap::Parser;
-use std::io::{self, Read, Write};
+use std::io::{self, Write};
 use termcolor::{Color, ColorChoice, StandardStream};
 mod color;
 mod journal_add;
@@ -22,7 +22,7 @@ fn main() {
     writeln!(stdout, "2. Read your journal entries");
     writeln!(stdout, "3. Edit a journal entry");
     writeln!(stdout, "4. Delete a journal entry");
-    let mut option: u8;
+    let option: u8;
     loop {
         write!(stdout, "> ");
         stdout.flush().expect("unable to flush stdout");
@@ -33,7 +33,6 @@ fn main() {
         match buffer.trim().parse::<u8>() {
             Ok(choice) => {
                 if choice > 3 {
-                    option = choice;
                     notes::error(&mut stdout, "number out of range");
                     continue;
                 }

@@ -1,8 +1,6 @@
 use crate::journal_fs::{self, JournalEntry};
-use crate::notes;
-use serde;
-use std::io::{self, Read, Seek, SeekFrom, Write};
-use termcolor::{Color, StandardStream};
+use std::io::{self, Write};
+use termcolor::StandardStream;
 
 pub fn add(stdout: &mut StandardStream, custom_dir: Option<String>) {
     let mut journal_entry = JournalEntry::new("", "", false);

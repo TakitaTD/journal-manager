@@ -3,19 +3,6 @@
 version = 3
 
 [[package]]
-name = "JournalManager"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "clap",
- "dirs",
- "serde",
- "serde_json",
- "termcolor",
- "users",
-]
-
-[[package]]
 name = "atty"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -170,6 +157,19 @@ name = "itoa"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6c8af84674fe1f223a982c933a0ee1086ac4d4052aa0fb8060c12c6ad838e754"
+
+[[package]]
+name = "journal-manager"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "clap",
+ "dirs",
+ "serde",
+ "serde_json",
+ "termcolor",
+ "users",
+]
 
 [[package]]
 name = "js-sys"

@@ -1,9 +1,8 @@
 use crate::journal_fs;
-use serde;
 use serde_json;
-use std::fs::{File, OpenOptions};
-use std::io::{self, Read, Write};
-use termcolor::{Color, StandardStream};
+use std::fs::OpenOptions;
+use std::io::{Read, Write};
+use termcolor::StandardStream;
 
 pub fn read(stdout: &mut StandardStream, custom_dir: &Option<String>) {
     let mut file = OpenOptions::new()

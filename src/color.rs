@@ -1,5 +1,4 @@
-use std::io::Write;
-use termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor};
+use termcolor::{Color, ColorSpec, StandardStream, WriteColor};
 
 pub fn set_color(stdout: &mut StandardStream, color: Color) {
     stdout

@@ -100,4 +100,3 @@ pub fn init(stdout: &mut StandardStream, custom_dir: &Option<String>) {
         writeln!(stdout, "done.");
     }
 }
-pub fn get_journals() {}
