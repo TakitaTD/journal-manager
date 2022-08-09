@@ -26,6 +26,7 @@ pub struct JournalData {
     pub title: String,
     pub id: String,
     pub created: String,
+    pub encrypted: bool,
 }
 impl JournalData {
     pub fn new(journal: JournalEntry) -> JournalData {
@@ -33,6 +34,7 @@ impl JournalData {
             title: journal.title,
             id: format!("{}-{}", journal.created, journal.id),
             created: journal.created,
+            encrypted: journal.encrypted,
         };
     }
 }
@@ -127,11 +129,15 @@ pub fn save_journal(
     journals_file
         .read_to_string(&mut journals_data)
         .expect("cannot read file to string");
-    journals_file.seek(SeekFrom::Start(0));
+    journals_file
+        .seek(SeekFrom::Start(0))
+        .expect("unable to seek file");
     let mut journals_data =
         serde_json::from_str::<Vec<JournalData>>(journals_data.as_str()).unwrap_or(vec![]);
     journals_data.push(JournalData::new(journal));
-    journals_file.write_all(serde_json::to_string(&journals_data).unwrap().as_bytes());
+    journals_file
+        .write_all(serde_json::to_string(&journals_data).unwrap().as_bytes())
+        .expect("unable to write to file");
 }
 pub fn init(stdout: &mut StandardStream, custom_dir: &Option<String>) {
     let journal_dir = get_journal_dir(stdout, custom_dir);

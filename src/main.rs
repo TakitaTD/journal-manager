@@ -56,7 +56,10 @@ fn main() {
             writeln!(stdout, "Delete one");
         }
         _ => {
-            println!("");
+            writeln!(
+                stdout,
+                "Uhh, this code is supposed to be unreachable. Please submit a bug report."
+            );
         }
     }
 }
