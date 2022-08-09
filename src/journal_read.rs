@@ -1,7 +1,9 @@
-use crate::journal_fs;
+use crate::journal_fs::{self, JournalData, JournalEntry};
+use crate::notes;
 use serde_json;
 use std::fs::OpenOptions;
-use std::io::{Read, Write};
+use std::io::{self, Read, Write};
+use std::path::Path;
 use termcolor::StandardStream;
 
 pub fn read(stdout: &mut StandardStream, custom_dir: &Option<String>) {
@@ -13,7 +15,70 @@ pub fn read(stdout: &mut StandardStream, custom_dir: &Option<String>) {
     let mut file_string = String::new();
     file.read_to_string(&mut file_string)
         .expect("cannot read file to string");
-    let journal_entries = serde_json::from_str::<journal_fs::JournalEntry>(&file_string.trim())
-        .expect("unable to deserialise file");
-    writeln!(stdout, "{:?}", journal_entries);
+
+    let journal_entries =
+        serde_json::from_str::<Vec<JournalData>>(&file_string).expect("unable to deserialise file");
+    let mut count: u16 = 0;
+    for journal in &journal_entries {
+        count += 1;
+        writeln!(stdout, "   {count}. {}, {}", journal.title, journal.created);
+    }
+    writeln!(stdout, "\n   Select entry to read:");
+    let mut selected_entry: u16 = 0;
+
+    loop {
+        write!(stdout, "   > ");
+        stdout.flush().expect("unable to flush stdout");
+        let mut buffer = String::new();
+        io::stdin()
+            .read_line(&mut buffer)
+            .expect("error getting user input from stdin");
+        match buffer.trim().parse::<u16>() {
+            Ok(choice) => {
+                if choice > count {
+                    notes::error(stdout, "number out of range");
+                    continue;
+                }
+                selected_entry = choice;
+                break;
+            }
+            Err(err) => {
+                notes::error(stdout, format!("{}", err).as_str());
+                continue;
+                // writeln!(stdout, "{}", err);
+            }
+        }
+    }
+    let mut journal_file = &journal_entries[(selected_entry - 1) as usize];
+    let path = format!(
+        "{}/{}.json",
+        journal_fs::get_journal_dir(stdout, custom_dir),
+        journal_file.id
+    );
+    writeln!(stdout, "{}", path);
+    let mut journal_file = OpenOptions::new()
+        .read(true)
+        .open(format!(
+            "{}/{}.json",
+            journal_fs::get_journal_dir(stdout, custom_dir),
+            journal_file.id
+        ))
+        .expect("unable to read file");
+    let mut journal_data = String::new();
+    journal_file
+        .read_to_string(&mut journal_data)
+        .expect("unable to read file to string");
+    let journal_data =
+        serde_json::from_str::<JournalEntry>(&journal_data).expect("unable to deserialise string");
+    writeln!(
+        stdout,
+        "Title: {}, Created At: {}\nContent:",
+        journal_data.title, journal_data.created
+    );
+    let mut current_line: u32 = 0;
+    for line in journal_data.content.split("\n") {
+        current_line += 1;
+        writeln!(stdout, "{}    {}", current_line, line);
+    }
+    // writeln!(stdout, "{:?}", journal_entries[1]);
 }

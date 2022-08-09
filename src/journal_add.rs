@@ -13,9 +13,14 @@ pub fn add(stdout: &mut StandardStream, custom_dir: Option<String>) {
     writeln!(
         stdout,
         "Write some text. (Make a new line with the text: \"qq!\" to quit)"
-    );
+    )
+    .expect("error when writing to stdout");
+    let mut lines: u32 = 0;
     loop {
         let mut buf = String::new();
+        lines += 1;
+        write!(stdout, "{}    ", lines);
+        stdout.flush().expect("unable to flush stdout");
         io::stdin()
             .read_line(&mut buf)
             .expect("unable to read line from stdin");

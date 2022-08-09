@@ -56,7 +56,7 @@ fn main() {
             writeln!(stdout, "Delete one");
         }
         _ => {
-            notes::error(&mut stdout, "This code is not meant to be reachable. If you are seeing this, please submit a bug report at: https://gitlab.com/TakitaTD/JournalManager");
+            println!("");
         }
     }
 }
